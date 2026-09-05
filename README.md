@@ -1,11 +1,15 @@
-# LORWIN Legacy Edition — 3440x1440 ultrawide patch
+# LORWIN Legacy Edition — ultrawide patch (2560x1080 and up)
 
-Static-only fix, game not run during development. Replaces the unused 5:4 aspect
-entry with the 3440/1440 aspect so the mode passes the game's filter.
+Static-only fix, game not run during development. Replaces the legacy aspect
+filter table with popular widescreen aspects above 1920x1080.
 
 ## What it does
-- `witn.exe` file offset `0xA46C5C`: `00 00 A0 3F` (1.25) → `8E E3 18 40` (2.3888889)
-  Table at `0xA46C50`: 1.7777 / 1.6 / 1.3333 / **2.38888**
+- `witn.exe` aspect table at file offset `0xA46C50` (16 bytes) becomes:
+  1.77778 (16:9 — 1920x1080, 2560x1440, 3840x2160) /
+  2.37037 (21:9 — 2560x1080, 5120x2160) /
+  2.38889 (UW — 3440x1440) /
+  3.55556 (32:9 — 3840x1080, 5120x1440)
+- Drops legacy 16:10 / 4:3 / 5:4 from the resolution list (revert restores them).
 - `%LOCALAPPDATA%\Aspyr\War in the North\GameSettings.dat` offsets `0x2C`/`0x30`:
   1920x1080 → 3440x1440
 

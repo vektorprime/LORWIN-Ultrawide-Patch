@@ -1,5 +1,7 @@
-<# LORWIN Legacy Edition 3440x1440 ultrawide patch - no Python required.
+<# LORWIN Legacy Edition ultrawide patch - no Python required.
 Uses only built-in Windows PowerShell 5.1+.
+Aspect table becomes 16:9 | 21:9 (2560x1080) | UW 3440x1440 | 32:9 (5120x1440).
+Drops legacy 16:10/4:3/5:4 from the list (revert restores them).
 Run: powershell -ExecutionPolicy Bypass -File LORWIN_ultrawide_patch.ps1 [-CheckOnly] [-Revert] [-Exe PATH] [-Settings PATH]
 Or double-click Run_Patch.bat.
 #>
@@ -12,9 +14,11 @@ param(
 $ErrorActionPreference = "Stop"
 
 $TABLE = 0xA46C50
-$PATCH = 0xA46C5C
-$OLD_BYTES = [byte[]](0x00,0x00,0xA0,0x3F)   # 1.25f
-$NEW_BYTES = [byte[]](0x8E,0xE3,0x18,0x40)   # 2.3888889f (3440/1440)
+# v2 popular table bytes: 16:9 | 21:9 (2560x1080) | UW (3440x1440) | 32:9 (5120x1440)
+$NEW_TABLE = [byte[]](0x39,0x8E,0xE3,0x3F, 0x26,0xB4,0x17,0x40, 0x8E,0xE3,0x18,0x40, 0x39,0x8E,0x63,0x40)
+# accepted "before" states: v1.0 original and v1.1 (single-3440 patch)
+$V10_TABLE = [byte[]](0x39,0x8E,0xE3,0x3F, 0xCD,0xCC,0xCC,0x3F, 0xAB,0xAA,0xAA,0x3F, 0x00,0x00,0xA0,0x3F)
+$V11_TABLE = [byte[]](0x39,0x8E,0xE3,0x3F, 0xCD,0xCC,0xCC,0x3F, 0xAB,0xAA,0xAA,0x3F, 0x8E,0xE3,0x18,0x40)
 $W_OFF = 0x2C; $H_OFF = 0x30
 
 function Find-Exe {
@@ -72,11 +76,12 @@ if ($Revert) {
 $data = [IO.File]::ReadAllBytes($Exe)
 $floats = Get-Floats $data $TABLE
 Write-Output ("table @{0:X}: {1} -> {2}" -f $TABLE, (($data[$TABLE..($TABLE+15)] | ForEach-Object { $_.ToString("X2") }) -join " "), ($floats -join ", "))
-$already = [Math]::Abs($floats[3] - 2.3888889) -lt 0.001
+$cur = $data[$TABLE..($TABLE+15)]
+$already = (@(Compare-Object $cur $NEW_TABLE -SyncWindow 0).Length -eq 0)
 if (-not $already) {
-  if (-not ([Math]::Abs($floats[0]-1.7777778) -lt 0.01 -and [Math]::Abs($floats[1]-1.6) -lt 0.01 -and [Math]::Abs($floats[2]-1.3333334) -lt 0.01 -and [Math]::Abs($floats[3]-1.25) -lt 0.01)) {
-    Write-Output "Unexpected table - wrong exe version?"; exit 3
-  }
+  $isV10 = (@(Compare-Object $cur $V10_TABLE -SyncWindow 0).Length -eq 0)
+  $isV11 = (@(Compare-Object $cur $V11_TABLE -SyncWindow 0).Length -eq 0)
+  if (-not ($isV10 -or $isV11)) { Write-Output "Unexpected table - wrong exe version?"; exit 3 }
 }
 
 if ($CheckOnly) {
@@ -89,9 +94,9 @@ if ($CheckOnly) {
 if (-not (Test-Path -LiteralPath $exeBak)) { Copy-Item -LiteralPath $Exe -Destination $exeBak -Force; Write-Output "backup exe -> $exeBak" }
 if (-not (Test-Path -LiteralPath $setBak)) { Copy-Item -LiteralPath $Settings -Destination $setBak -Force; Write-Output "backup settings -> $setBak" }
 if (-not $already) {
-  for ($i=0; $i -lt 4; $i++) { $data[$PATCH+$i] = $NEW_BYTES[$i] }
+  for ($i=0; $i -lt 16; $i++) { $data[$TABLE+$i] = $NEW_TABLE[$i] }
   [IO.File]::WriteAllBytes($Exe, $data)
-  Write-Output ("patched exe 0x{0:X}: 1.25 -> {1}" -f $PATCH, (3440/1440))
+  Write-Output "patched exe table -> 16:9 / 21:9 / UW-3440 / 32:9"
 } else { Write-Output "exe already patched" }
 
 $s = [IO.File]::ReadAllBytes($Settings)

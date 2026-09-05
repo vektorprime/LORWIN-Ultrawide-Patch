@@ -1,5 +1,8 @@
-"""LORWIN Legacy Edition (Steam App 2523770) 3440x1440 ultrawide patch.
-Minimal table patch: replaces obsolete 5:4 aspect entry with 3440/1440 aspect.
+"""LORWIN Legacy Edition (Steam App 2523770) ultrawide patch.
+Replaces the legacy aspect filter table with popular >1080p aspects:
+  16:9 (1920x1080, 2560x1440, 3840x2160), 21:9 (2560x1080, 5120x2160),
+  UW 3440x1440, 32:9 (3840x1080, 5120x1440).
+Drops legacy 16:10/4:3/5:4 from the resolution list (revert restores them).
 Does NOT distribute game files - patches the user's own install.
 
 Usage:
@@ -13,11 +16,11 @@ Defaults (auto-detected if not given):
 import argparse, hashlib, os, pathlib, shutil, struct, sys
 
 TABLE_OFFSET = 0xA46C50
-ENTRY_INDEX = 3
-PATCH_OFFSET = TABLE_OFFSET + ENTRY_INDEX * 4
-OLD_FLOAT_BYTES = struct.pack('<f', 1.25)
-NEW_ASPECT = 3440 / 1440
-NEW_FLOAT_BYTES = struct.pack('<f', NEW_ASPECT)
+# v2 popular table: 16:9 | 21:9 (2560x1080) | UW (3440x1440) | 32:9 (5120x1440)
+NEW_TABLE = struct.pack('<4f', 1.7777778, 2560/1080, 3440/1440, 5120/1440)
+# accepted "before" states: v1.0 original and v1.1 (single-3440 patch)
+V10_TABLE = struct.pack('<4f', 1.7777778, 1.6, 1.3333334, 1.25)
+V11_TABLE = struct.pack('<4f', 1.7777778, 1.6, 1.3333334, 3440/1440)
 WIDTH_OFFSET, HEIGHT_OFFSET = 0x2C, 0x30
 NEW_W, NEW_H = struct.pack('<I', 3440), struct.pack('<I', 1440)
 
@@ -77,9 +80,9 @@ def main():
     tbl = data[TABLE_OFFSET:TABLE_OFFSET+16]
     floats = struct.unpack('<4f', tbl)
     print(f"table @{hex(TABLE_OFFSET)}: {tbl.hex(' ')} -> {floats}")
-    already = abs(floats[3] - NEW_ASPECT) < 0.001
+    already = tbl == NEW_TABLE
     if not already:
-        assert abs(floats[0]-1.7777778)<0.01 and abs(floats[1]-1.6)<0.01 and abs(floats[2]-1.3333334)<0.01 and abs(floats[3]-1.25)<0.01, "unexpected table - wrong exe version?"
+        assert tbl in (V10_TABLE, V11_TABLE), "unexpected table - wrong exe version?"
     if a.check_only:
         s = settings.read_bytes()
         w, h = struct.unpack('<2I', s[WIDTH_OFFSET:HEIGHT_OFFSET+4])
@@ -88,9 +91,9 @@ def main():
     if not exe_bak.exists(): shutil.copy2(exe, exe_bak); print(f"backup exe -> {exe_bak} {sha(exe_bak)}")
     if not set_bak.exists(): shutil.copy2(settings, set_bak); print(f"backup settings -> {set_bak}")
     if not already:
-        patched = bytearray(data); patched[PATCH_OFFSET:PATCH_OFFSET+4] = NEW_FLOAT_BYTES
+        patched = bytearray(data); patched[TABLE_OFFSET:TABLE_OFFSET+16] = NEW_TABLE
         exe.write_bytes(patched)
-        print(f"patched exe {hex(PATCH_OFFSET)}: 1.25 -> {NEW_ASPECT}")
+        print(f"patched exe table {hex(TABLE_OFFSET)} -> 16:9 / 21:9 / UW-3440 / 32:9")
     else: print("exe already patched")
     s = bytearray(settings.read_bytes())
     assert len(s) == 512
