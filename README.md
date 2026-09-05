@@ -35,7 +35,7 @@ cd "$env:USERPROFILE\Desktop\LORWIN_Ultrawide_Patch"
 Custom paths / revert:
 
 ```powershell
-python .\LORWIN_ultrawide_patch.py --exe "E:\SteamLibrary\steamapps\common\LORWIN\witn.exe" --settings "$env:LOCALAPPDATA\Aspyr\War in the North\GameSettings.dat"
+python .\LORWIN_ultrawide_patch.py --exe "C:\Program Files (x86)\Steam\steamapps\common\LORWIN\witn.exe" --settings "$env:LOCALAPPDATA\Aspyr\War in the North\GameSettings.dat"
 python .\LORWIN_ultrawide_patch.py --revert
 ```
 

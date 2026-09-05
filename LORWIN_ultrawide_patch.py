@@ -34,9 +34,13 @@ def find_exe():
                     cands.append(pathlib.Path(m.group(1)) / "steamapps/common/LORWIN/witn.exe")
             except Exception:
                 pass
+    # Default Steam install location first (most users)
+    cands.append(pathlib.Path("C:/Program Files (x86)/Steam/steamapps/common/LORWIN/witn.exe"))
+    cands.append(pathlib.Path("C:/Program Files/Steam/steamapps/common/LORWIN/witn.exe"))
     for drive in ["C:", "D:", "E:", "F:", "G:"]:
         cands.append(pathlib.Path(f"{drive}/SteamLibrary/steamapps/common/LORWIN/witn.exe"))
         cands.append(pathlib.Path(f"{drive}/Program Files (x86)/Steam/steamapps/common/LORWIN/witn.exe"))
+        cands.append(pathlib.Path(f"{drive}/Steam/steamapps/common/LORWIN/witn.exe"))
     for c in cands:
         if c.exists() and c.stat().st_size > 10_000_000:
             return c
