@@ -33,8 +33,8 @@ Easiest. Uses only built-in PowerShell. If you get access denied, re-open PowerS
 ```powershell
 git clone https://github.com/vektorprime/LORWIN-Ultrawide-Patch.git
 cd LORWIN-Ultrawide-Patch
-powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1 -CheckOnly
-powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1
+powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1 -CheckOnly   # before: confirms game found
+powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1              # apply patch
 ```
 
 Or just double-click `Run_Patch.bat`.
@@ -53,9 +53,9 @@ Then launch the game and pick 3440x1440 in PC Change Resolution.
 ```powershell
 git clone https://github.com/vektorprime/LORWIN-Ultrawide-Patch.git
 cd LORWIN-Ultrawide-Patch
-python .\LORWIN_ultrawide_patch.py --check-only
-python .\LORWIN_ultrawide_patch.py
-python .\LORWIN_ultrawide_patch.py --check-only
+python .\LORWIN_ultrawide_patch.py --check-only   # before: confirms game found, shows 1920x1080
+python .\LORWIN_ultrawide_patch.py              # apply patch
+python .\LORWIN_ultrawide_patch.py --check-only   # after: confirms 3440x1440
 ```
 
 Or if you downloaded the zip to your Desktop:
