@@ -16,7 +16,22 @@ entry with the 3440/1440 aspect so the mode passes the game's filter.
 4. Revert: `python LORWIN_ultrawide_patch.py --revert`.
 5. Check only: `python LORWIN_ultrawide_patch.py --check-only`.
 
-## Example
+## No Python? (Windows built-in)
+
+Double-click `Run_Patch.bat`, or in PowerShell:
+
+```powershell
+git clone https://github.com/vektorprime/LORWIN-Ultrawide-Patch.git
+cd LORWIN-Ultrawide-Patch
+powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1 -CheckOnly
+powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1
+# revert:
+powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1 -Revert
+```
+
+The `.py` version does the same thing if you prefer Python.
+
+## Example (Python)
 
 ```powershell
 git clone https://github.com/vektorprime/LORWIN-Ultrawide-Patch.git
