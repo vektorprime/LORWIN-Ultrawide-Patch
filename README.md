@@ -13,11 +13,10 @@ entry with the 3440/1440 aspect so the mode passes the game's filter.
 
 1. Close the game fully (Steam must not show it Running).
 2. Set Windows desktop to 3440x1440.
-3. If you get access denied, re-open PowerShell as Administrator and re-run.
 
 ## OPTION A — No Python (recommended, Windows built-in)
 
-Easiest. Uses only built-in PowerShell.
+Easiest. Uses only built-in PowerShell. If you get access denied, re-open PowerShell as Administrator and re-run.
 
 ```powershell
 git clone https://github.com/vektorprime/LORWIN-Ultrawide-Patch.git
