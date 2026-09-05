@@ -19,10 +19,17 @@ entry with the 3440/1440 aspect so the mode passes the game's filter.
 ## Example
 
 ```powershell
-cd "C:\Users\vicha\Desktop\LORWIN_Ultrawide_Patch"
+git clone https://github.com/vektorprime/LORWIN-Ultrawide-Patch.git
+cd LORWIN-Ultrawide-Patch
 python .\LORWIN_ultrawide_patch.py --check-only
 python .\LORWIN_ultrawide_patch.py
 python .\LORWIN_ultrawide_patch.py --check-only
+```
+
+Or if you downloaded the zip to your Desktop:
+
+```powershell
+cd "$env:USERPROFILE\Desktop\LORWIN_Ultrawide_Patch"
 ```
 
 Custom paths / revert:
