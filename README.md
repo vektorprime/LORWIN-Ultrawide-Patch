@@ -15,8 +15,7 @@ filter table with popular widescreen aspects above 1920x1080.
 
 ## Before you start
 
-1. Close the game fully (Steam must not show it Running).
-2. Set Windows desktop to 3440x1440.
+Close the game.
 
 ## OPTION A — No Python (recommended, Windows built-in)
 
@@ -85,5 +84,4 @@ Then launch the game and pick 3440x1440 in PC Change Resolution.
 
 ## Notes
 
-Backups are created next to originals (`*.bak_1080p`). Steam Verify/updates revert the exe — just re-run. Videos pillarbox, 3D is Hor+.
-Only share these scripts + README, never the patched exe.
+Backups are created next to originals (`*.bak_1080p`).
