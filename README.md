@@ -9,29 +9,35 @@ entry with the 3440/1440 aspect so the mode passes the game's filter.
 - `%LOCALAPPDATA%\Aspyr\War in the North\GameSettings.dat` offsets `0x2C`/`0x30`:
   1920x1080 → 3440x1440
 
-## Use
+## Before you start
+
 1. Close the game fully (Steam must not show it Running).
-2. `python LORWIN_ultrawide_patch.py` (admin shell if SteamLibrary denies writes).
-3. Set Windows desktop to 3440x1440, launch, pick 3440x1440 in PC Change Resolution.
-4. Revert: `python LORWIN_ultrawide_patch.py --revert`.
-5. Check only: `python LORWIN_ultrawide_patch.py --check-only`.
+2. Set Windows desktop to 3440x1440.
+3. If you get access denied, re-open PowerShell as Administrator and re-run.
 
-## No Python? (Windows built-in)
+## OPTION A — No Python (recommended, Windows built-in)
 
-Double-click `Run_Patch.bat`, or in PowerShell:
+Easiest. Uses only built-in PowerShell.
 
 ```powershell
 git clone https://github.com/vektorprime/LORWIN-Ultrawide-Patch.git
 cd LORWIN-Ultrawide-Patch
 powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1 -CheckOnly
 powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1
-# revert:
+```
+
+Or just double-click `Run_Patch.bat`.
+
+Custom paths / revert:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1 -Exe "C:\Program Files (x86)\Steam\steamapps\common\LORWIN\witn.exe" -Settings "$env:LOCALAPPDATA\Aspyr\War in the North\GameSettings.dat"
 powershell -ExecutionPolicy Bypass -File .\LORWIN_ultrawide_patch.ps1 -Revert
 ```
 
-The `.py` version does the same thing if you prefer Python.
+Then launch the game and pick 3440x1440 in PC Change Resolution.
 
-## Example (Python)
+## OPTION B — Python (same fix, if you prefer Python)
 
 ```powershell
 git clone https://github.com/vektorprime/LORWIN-Ultrawide-Patch.git
@@ -54,7 +60,9 @@ python .\LORWIN_ultrawide_patch.py --exe "C:\Program Files (x86)\Steam\steamapps
 python .\LORWIN_ultrawide_patch.py --revert
 ```
 
-If access denied, re-open PowerShell as Administrator and re-run.
+Then launch the game and pick 3440x1440 in PC Change Resolution.
+
+## Notes
 
 Backups are created next to originals (`*.bak_1080p`). Steam Verify/updates revert the exe — just re-run. Videos pillarbox, 3D is Hor+.
-Only send this script + README, never the patched exe.
+Only share these scripts + README, never the patched exe.
